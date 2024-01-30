@@ -1,52 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html>
+<head>
+    <style>
+        @font-face {
+            font-family: myFirstFont;
+            src: url("assets/BroadwayFlat.ttf");
+        }
+
+        body, h1, h2, h3, h4, h5, h6, .container {
+            font-family: myFirstFont, sans-serif;
+        }
+    </style>
     <meta charset="utf-8">
     <title>Music Tixs Project JavaScript | CodingNepal</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./assets/js/js.js" defer></script>
-  </head>
-  <body>
-    <h1>Upcoming Artist Events</h1>
+</head>
+<body>
+    <h1 style="color: turquoise; text-shadow: 2px 2px 4px rgba(0, 0, 0, 5.0); font-size: 85px;">Upcoming Artist Events</h1>
+    <p style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">Welcome to our event platform!</p>
+    <p style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">Enjoy the experience!</p>
     <div class="container">
-      <div class="weather-input">
-        <h3>Enter an Artist Name</h3>
-        <input class="city-input" type="text" placeholder="E.g., Rick Ross, DJ Khaled, Denzel Curry">
-        <button class="search-btn">Search</button>
-      </div>
-      <div class="weather-data">
-        <div class="current-weather">
-          <div class="details">
-            <h2>_______ ( ______ )</h2>
-            <h6>Temperature: __°C</h6>
-            <h6>Wind: __ M/S</h6>
-            <h6>Humidity: __%</h6>
-          </div>
+        <div class="weather-input">
+            <h3 style="font-size: 150%;">Enter an Artist Name</h3>
+            <input class="city-input" type="text" placeholder="E.g., Rick Ross, DJ Khaled, Denzel Curry">
+            <button class="search-btn">Search</button>
         </div>
-        <div class="days-forecast">
-          <h2>Concert Info</h2>
-          <ul class="weather-cards">
-            <li class="card">
-
-            </li>
-            <li class="card">
-
-            </li>
-            <li class="card">
-
-            </li>
-            <li class="card">
-
-            </li>
-            <li class="card">
-
-            </li>
-          </ul>
+        <div class="weather-data">
+            <div class="current-weather">
+                <div class="details">
+                    <h2>_______ ( ______ )</h2>
+                </div>
+            </div>
+            <div class="days-forecast">
+                <h2>Concert Info</h2>
+                <ul class="weather-cards">
+                    <li class="card"></li>
+                    <li class="card"></li>
+                    <li class="card"></li>
+                    <li class="card"></li>
+                    <li class="card"></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
-    
-  </body>
-  
+</body>
 </html>
