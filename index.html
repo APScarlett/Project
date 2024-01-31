@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         @font-face {
             font-family: myFirstFont;
-            src: url("assets/BroadwayFlat.ttf");
+            src: url("assets/fonts/BroadwayFlat.ttf");
         }
 
-        body, h1, h2, h3, h4, h5, h6, .container {
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .container {
             font-family: myFirstFont, sans-serif;
         }
     </style>
@@ -15,22 +23,28 @@
     <title>Music Tixs Project JavaScript | CodingNepal</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./assets/js/js.js" defer></script>
 </head>
+
 <body>
-    <h1 style="color: turquoise; text-shadow: 2px 2px 4px rgba(0, 0, 0, 5.0); font-size: 85px;">Upcoming Artist Events</h1>
-    <p style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">Welcome to our event platform!</p>
-    <p style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">Enjoy the experience!</p>
+    <h1 style="color: turquoise; text-shadow: 2px 2px 4px rgba(0, 0, 0, 5.0); font-size: 85px;">Upcoming Artist Events
+    </h1>
+    <p
+        style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">
+        Welcome to our event platform!</p>
+    <p
+        style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">
+        Enjoy the experience!</p>
     <div class="container">
         <div class="weather-input">
             <h3 style="font-size: 150%;">Enter an Artist Name</h3>
-            <input class="city-input" type="text" placeholder="E.g., Rick Ross, DJ Khaled, Denzel Curry">
-            <button class="search-btn">Search</button>
+            <input class="city-input" type="text" id="artistName"
+                placeholder="E.g., Rick Ross, DJ Khaled, Denzel Curry">
+            <button class="search-btn" onclick="searchPlaylist()">Search</button>
         </div>
         <div class="weather-data">
             <div class="current-weather">
-                <div class="details">
-                    <h2>_______ ( ______ )</h2>
+                <div class="details" id="playlistContainer">
+                    <!-- Artist's playlists will be displayed here -->
                 </div>
             </div>
             <div class="days-forecast">
@@ -45,5 +59,88 @@
             </div>
         </div>
     </div>
+
+    <!-- Load the YouTube API Client Library -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <!-- Your JavaScript code for handling YouTube API calls -->
+    <script>
+        async function searchPlaylist() {
+            var artistName = document.getElementById('artistName').value;
+            const url = 'https://youtube-music-api3.p.rapidapi.com/search?q=' + artistName + '&type=song';
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '439b6caa7fmsh14b4337a05b9adap15d98bjsna5fc1e7361d9',
+                    'X-RapidAPI-Host': 'youtube-music-api3.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                console.log(result);
+                searchMusic(result)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        async function searchMusic(result) {
+            var videoId=result.result[0].videoId
+            const url = 'https://youtube-music-api3.p.rapidapi.com/music/info?id='+videoId;
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '439b6caa7fmsh14b4337a05b9adap15d98bjsna5fc1e7361d9',
+                    'X-RapidAPI-Host': 'youtube-music-api3.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                console.log(result);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        // Function to search for artist playlists
+        function searchArtist() {
+            var artistName = document.getElementById('artistName').value;
+            alert(artistName)
+            // Initialize the YouTube API client
+            gapi.client.init({
+                'apiKey': 'AIzaSyBF4vswmdpfW0mFOyh2ZPipugHADcZl5-Q',
+                'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
+            }).then(function () {
+                // Call the YouTube Data API to search for playlists related to the artist
+                return gapi.client.youtube.search.list({
+                    q: artistName + ' playlist',
+                    part: 'snippet',
+                    maxResults: 5
+                });
+            }).then(function (response) {
+                var playlists = response.result.items;
+                var playlistContainer = document.getElementById('playlistContainer');
+                playlistContainer.innerHTML = ''; // Clear previous results
+
+                playlists.forEach(function (playlist) {
+                    var playlistTitle = playlist.snippet.title;
+                    var playlistId = playlist.id.playlistId;
+                    var playlistItem = document.createElement('div');
+                    playlistItem.textContent = playlistTitle;
+                    playlistItem.innerHTML = '<a href="https://www.youtube.com/playlist?list=' + playlistId + '">' + playlistTitle + '</a>';
+                    playlistContainer.appendChild(playlistItem);
+                });
+            }, function (reason) {
+                console.log('Error: ' + reason.result.error.message);
+            });
+        }
+
+        // Load the YouTube API client
+        gapi.load('client', function () {
+            console.log('YouTube API client loaded.');
+        });
+    </script>
 </body>
+
 </html>
