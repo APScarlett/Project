@@ -20,33 +20,35 @@
         }
     </style>
     <meta charset="utf-8">
-    <title>Music Tixs Project JavaScript | CodingNepal</title>
+    <title>Music Artist Bio JavaScript | CodingNepal</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-    <h1 style="color: turquoise; text-shadow: 2px 2px 4px rgba(0, 0, 0, 5.0); font-size: 85px;">Upcoming Artist Events
+    <h1 style="color: turquoise; text-shadow: 2px 2px 4px rgba(0, 0, 0, 5.0); font-size: 85px;">Music Artist Bio
     </h1>
     <p
         style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">
-        Welcome to our event platform!</p>
+        Welcome to the platform!</p>
     <p
         style="text-align: center; font-size: 24px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: #dc143c;">
-        Enjoy the experience!</p>
+        ------</p>
     <div class="container">
         <div class="weather-input">
             <h3 style="font-size: 150%;">Enter an Artist Name</h3>
             <input class="city-input" type="text" id="artistName"
                 placeholder="E.g., Rick Ross, DJ Khaled, Denzel Curry">
-            <button class="search-btn" onclick="searchPlaylist()">Search</button>
+            <button class="search-btn">Search</button>
         </div>
         <div class="weather-data">
             <div class="current-weather">
-                <div class="details" id="playlistContainer">
-                    <!-- Artist's playlists will be displayed here -->
+                <div class="details" id="artistBioContainer">
+
+
                 </div>
             </div>
+            <div id="embed-iframe"></div>
             <div class="days-forecast">
                 <h2>Concert Info</h2>
                 <ul class="weather-cards">
@@ -59,87 +61,69 @@
             </div>
         </div>
     </div>
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 
-    <!-- Load the YouTube API Client Library -->
-    <script src="https://apis.google.com/js/api.js"></script>
-    <!-- Your JavaScript code for handling YouTube API calls -->
+    <!-- Your JavaScript code for handling Wikipedia API calls -->
     <script>
-        async function searchPlaylist() {
+        var searchBtn = document.querySelector('.search-btn')
+        var searchInput = document.querySelector("#artistName")
+        searchBtn.addEventListener("click", displaySpotify)
+        async function searchArtistBio() {
             var artistName = document.getElementById('artistName').value;
-            const url = 'https://youtube-music-api3.p.rapidapi.com/search?q=' + artistName + '&type=song';
+
+            const url = 'https://wikipedia-api1.p.rapidapi.com/get_page?page_name=' + encodeURIComponent(artistName) + '&lang=en';
             const options = {
                 method: 'GET',
                 headers: {
-                    'X-RapidAPI-Key': '439b6caa7fmsh14b4337a05b9adap15d98bjsna5fc1e7361d9',
-                    'X-RapidAPI-Host': 'youtube-music-api3.p.rapidapi.com'
+                    'X-RapidAPI-Key': 'fa1e0954abmsh49440351d39b2c2p1c39e1jsn077aa4a47144',
+                    'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
                 }
             };
 
             try {
                 const response = await fetch(url, options);
                 const result = await response.json();
-                console.log(result);
-                searchMusic(result)
+                console.log(result)
+                displayArtistBio(result);
+                displaySpotify(result)
             } catch (error) {
                 console.error(error);
             }
         }
-        async function searchMusic(result) {
-            var videoId=result.result[0].videoId
-            const url = 'https://youtube-music-api3.p.rapidapi.com/music/info?id='+videoId;
+        async function displaySpotify(result) {
+            var searchInput = document.querySelector("#artistName")
+            const url = 'https://spotify23.p.rapidapi.com/search/?q='+searchInput.value+'&type=multi&offset=0&limit=10&numberOfTopResults=5';
             const options = {
                 method: 'GET',
                 headers: {
-                    'X-RapidAPI-Key': '439b6caa7fmsh14b4337a05b9adap15d98bjsna5fc1e7361d9',
-                    'X-RapidAPI-Host': 'youtube-music-api3.p.rapidapi.com'
+                    'X-RapidAPI-Key': 'fa1e0954abmsh49440351d39b2c2p1c39e1jsn077aa4a47144',
+                    'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
                 }
             };
-
             try {
                 const response = await fetch(url, options);
                 const result = await response.json();
                 console.log(result);
+                const uri=result.albums.items[0].data.uri
+                window.onSpotifyIframeApiReady = (IFrameAPI) => {
+                    const element = document.getElementById('embed-iframe');
+                    const options = {
+                        uri: uri
+                    };
+                    const callback = (EmbedController) => { };
+                    IFrameAPI.createController(element, options, callback);
+                }
             } catch (error) {
                 console.error(error);
             }
-        }
-        // Function to search for artist playlists
-        function searchArtist() {
-            var artistName = document.getElementById('artistName').value;
-            alert(artistName)
-            // Initialize the YouTube API client
-            gapi.client.init({
-                'apiKey': 'AIzaSyBF4vswmdpfW0mFOyh2ZPipugHADcZl5-Q',
-                'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
-            }).then(function () {
-                // Call the YouTube Data API to search for playlists related to the artist
-                return gapi.client.youtube.search.list({
-                    q: artistName + ' playlist',
-                    part: 'snippet',
-                    maxResults: 5
-                });
-            }).then(function (response) {
-                var playlists = response.result.items;
-                var playlistContainer = document.getElementById('playlistContainer');
-                playlistContainer.innerHTML = ''; // Clear previous results
+            // var artistName=result 
 
-                playlists.forEach(function (playlist) {
-                    var playlistTitle = playlist.snippet.title;
-                    var playlistId = playlist.id.playlistId;
-                    var playlistItem = document.createElement('div');
-                    playlistItem.textContent = playlistTitle;
-                    playlistItem.innerHTML = '<a href="https://www.youtube.com/playlist?list=' + playlistId + '">' + playlistTitle + '</a>';
-                    playlistContainer.appendChild(playlistItem);
-                });
-            }, function (reason) {
-                console.log('Error: ' + reason.result.error.message);
-            });
-        }
 
-        // Load the YouTube API client
-        gapi.load('client', function () {
-            console.log('YouTube API client loaded.');
-        });
+        }
+        function displayArtistBio(bio) {
+            var artistBioContainer = document.getElementById('artistBioContainer');
+            artistBioContainer.innerHTML = bio;
+        }
     </script>
 </body>
 
