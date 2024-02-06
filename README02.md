@@ -1,4 +1,4 @@
-# Music Playlist Hub
+# Concert Crashers
 
 ## Description
 -  The goal of our page is to allow users to search for a musical artist and populate a playlist for that artist and a list of upcoming concerts for said artist.
