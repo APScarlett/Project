@@ -34,5 +34,7 @@ N/A
 MIT
 
 ## Features
+https://github.com/APScarlett/Project
+https://apscarlett.github.io/Project/
 
 If your project has a lot of features, list them here.
